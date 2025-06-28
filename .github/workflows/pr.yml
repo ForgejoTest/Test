@@ -2,7 +2,7 @@ name: Pull Request
 
 on:
   repository_dispatch:
-    - types: [pull_request]
+    types: [pull_request]
 
 jobs:
   test:
