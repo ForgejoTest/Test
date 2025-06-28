@@ -71,6 +71,7 @@ pacman -Syu --noconfirm \
 	qt6-multimedia \
 	qt6-tools \
 	qt6-wayland \
+    qt6-webengine \
 	rapidjson \
 	sdl2 \
 	spirv-headers \
