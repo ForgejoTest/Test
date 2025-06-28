@@ -49,10 +49,10 @@ echo "See the *Description* column for more info."
 echo
 echo "| Build | Description |"
 echo "| ----- | ----- | ----------- |"
-row amd64 "amd64 (legacy)" "For CPUs older than 2013 or so"
-row amd64_v3 "amd64" "For any modern AMD or Intel CPU"
+row legacy "amd64 (legacy)" "For CPUs older than 2013 or so"
+row amd64 "amd64" "For any modern AMD or Intel CPU"
 row steamdeck "Steam Deck" "For Steam Deck and other >= Zen 2 AMD CPUs"
-row rog-ally-x "ROG Ally X" "For ROG Ally X and other >= Zen 4 AMD CPUs"
+row rog-ally "ROG Ally X" "For ROG Ally X and other >= Zen 4 AMD CPUs"
 row aarch64 "armv8-a" "For ARM CPUs made in mid-2021 or earlier"
 row armv9 "armv9-a" "For ARM CPUs made in late 2021 or later"
 echo

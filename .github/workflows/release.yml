@@ -33,7 +33,7 @@ jobs:
         run: |
           mkdir -p artifacts
 
-          for arch in amd64 amd64_v3 steamdeck rog-ally-x aarch64 armv9
+          for arch in amd64 legacy steamdeck rog-ally aarch64 armv9
           do
             cp linux-$arch/*.AppImage "artifacts/Eden-Linux-${FORGEJO_NUMBER}-${FORGEJO_REF}-${arch}.AppImage"
             # cp linux-$arch/*.AppImage.zsync "artifacts/Eden-Linux-${FORGEJO_NUMBER}-${FORGEJO_REF}-${arch}.AppImage.zsync"
