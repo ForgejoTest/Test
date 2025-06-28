@@ -63,7 +63,8 @@ echo
 echo "| Build | Description |"
 echo "| ----- | ----------- |"
 win amd64 amd64 "For any Windows machine running an AMD or Intel CPU"
-win arm64 aarch64 "For any Windows machine running a Qualcomm or other ARM-based SoC"
+echo "| arm64 (WIP) | For For any Windows machine running a Qualcomm or other ARM-based SoC. Currently a work-in-progress."
+# win arm64 aarch64 "For any Windows machine running a Qualcomm or other ARM-based SoC"
 echo
 echo "### Android"
 echo

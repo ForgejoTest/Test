@@ -31,6 +31,7 @@ jobs:
             arch: armv9
 
     container: ghcr.io/pkgforge-dev/archlinux:latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -47,7 +48,9 @@ jobs:
         shell: bash
         run: |
           cd eden
-          TARGET=appimage DEVEL=true ./.ci/linux/build.sh ${{ matrix.arch }}
+          TARGET=appimage DEVEL=true ./.ci/linux/build.sh ${{ matrix.arch }} $(nproc) \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
       - name: Package
         shell: bash
@@ -72,8 +75,8 @@ jobs:
           - runs-on: windows-latest
             arch: amd64
 
-          - runs-on: windows-11-arm
-            arch: arm64
+          # - runs-on: windows-11-arm
+          #   arch: arm64
 
     steps:
       - name: Checkout
@@ -89,6 +92,11 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.arch }}-vcpkg-${{ hashFiles('**/CMakeLists.txt', '**/vcpkg.json') }}-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.arch }}-vcpkg-
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: Eden-PRs-${{ runner.os }}-${{ matrix.arch }}
 
       - name: Get Variables and Clone
         uses: ./.github/workflows/clone
@@ -142,7 +150,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update -y
-          sudo apt-get install apksigner -y
+          sudo apt-get install apksigner ccache vulkan-headers glslang-tools libvulkan-dev -y
 
       - name: Build
         run: |

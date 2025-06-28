@@ -26,6 +26,9 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
 
+      - name: Parse Forgejo payload
+        uses: ./.github/workflows/parse
+
       - name: Package artifacts nicely
         run: |
           mkdir -p artifacts
@@ -38,7 +41,7 @@ jobs:
 
           cp android/*.apk artifacts/Eden-Android-${FORGEJO_NUMBER}-${FORGEJO_REF}.apk
 
-          for arch in amd64 arm64
+          for arch in amd64 # arm64
           do
             cp windows-$arch/*.zip artifacts/Eden-Windows-${FORGEJO_NUMBER}-${FORGEJO_REF}-${arch}.zip
           done
