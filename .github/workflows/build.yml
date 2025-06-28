@@ -10,6 +10,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Parse Forgejo payload
+        shell: bash
         run: |
           PAYLOAD_JSON='${{ toJSON(github.event.client_payload) }}'
           echo "FORGEJO_CLONE_URL=$(echo "$PAYLOAD_JSON" | jq -r '.clone_url')" >> $GITHUB_ENV
@@ -17,7 +18,9 @@ jobs:
           echo "FORGEJO_REF=$(echo "$PAYLOAD_JSON" | jq -r '.ref')" >> $GITHUB_ENV
           echo "FORGEJO_REPOSITORY=$(echo "$PAYLOAD_JSON" | jq -r '.repository')" >> $GITHUB_ENV
           echo "FORGEJO_TITLE=$(echo "$PAYLOAD_JSON" | jq -r '.title')" >> $GITHUB_ENV
+
       - name: Use environment variables
+        shell: bash
         run: |
           echo "Clone URL: $FORGEJO_CLONE_URL"
           echo "Number: $FORGEJO_NUMBER"
@@ -25,7 +28,12 @@ jobs:
           echo "Repository: $FORGEJO_REPOSITORY"
           echo "Title: $FORGEJO_TITLE"
 
-      - name: Hello
+      - name: Checkout Repo
+        shell: bash
         run: |
-          echo "Received event from Forgejo"
-          echo "Forgejo Payload: ${{ toJSON(github.event.client_payload) }}"
+          git clone "$FORGEJO_CLONE_URL" test
+          cd test
+          git reset --hard $FORGEJO_REF
+          git submodule update --init --recursive
+
+          ls
