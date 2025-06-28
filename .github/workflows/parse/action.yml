@@ -12,27 +12,4 @@ runs:
         echo "FORGEJO_REF=$(echo "$PAYLOAD_JSON" | jq -r '.ref')" >> $GITHUB_ENV
         echo "FORGEJO_REPOSITORY=$(echo "$PAYLOAD_JSON" | jq -r '.repository')" >> $GITHUB_ENV
         echo "FORGEJO_TITLE=$(echo "$PAYLOAD_JSON" | jq -r '.title')" >> $GITHUB_ENV
-
-    - name: Use environment variables
-      shell: bash
-      run: |
-        echo "Clone URL: $FORGEJO_CLONE_URL"
-        echo "Number: $FORGEJO_NUMBER"
-        echo "Ref: $FORGEJO_REF"
-        echo "Repository: $FORGEJO_REPOSITORY"
-        echo "Title: $FORGEJO_TITLE"
-
-    - name: Checkout Repo
-      shell: bash
-      run: |
-        git clone "$FORGEJO_CLONE_URL" test
-        cd test
-        git reset --hard $FORGEJO_REF
-        git submodule update --init --recursive
-
-        ls
-
-    - name: Clone Eden
-      shell: bash
-      run: |
-        git clone https://git.eden-emu.dev/eden-emu/eden.git --recursive
+        echo "FORGEJO_PR_URL=$(echo "$PAYLOAD_JSON" | jq -r '.url')" >> $GITHUB_ENV

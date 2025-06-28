@@ -1,12 +1,34 @@
 name: Pull Request
 
 on:
-  repository_dispatch:
-    types: [pull_request]
+  workflow_dispatch:
 
 jobs:
   linux:
-    runs-on: ubuntu-latest
+    name: "Linux (${{ matrix.arch }})"
+    runs-on: ${{ matrix.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runs-on: ubuntu-latest
+            arch: legacy
+
+          - runs-on: ubuntu-latest
+            arch: amd64
+
+          - runs-on: ubuntu-latest
+            arch: steamdeck
+
+          - runs-on: ubuntu-latest
+            arch: rog-ally
+
+          - runs-on: ubuntu-24.04-arm
+            arch: aarch64
+
+          - runs-on: ubuntu-24.04-arm
+            arch: armv9
+
     container: ghcr.io/pkgforge-dev/archlinux:latest
     steps:
       - name: Checkout
@@ -18,31 +40,122 @@ jobs:
           ./get-dependencies.sh
 
       - name: Get Variables and Clone
-        uses: ./.github/workflows/base
-
-      - name: Get info
-        shell: bash
-        run: |
-          echo "Clone URL: $FORGEJO_CLONE_URL"
-          echo "Number: $FORGEJO_NUMBER"
-          echo "Ref: $FORGEJO_REF"
-          echo "Repository: $FORGEJO_REPOSITORY"
-          echo "Title: $FORGEJO_TITLE"
+        uses: ./.github/workflows/clone
 
       - name: Build
         shell: bash
         run: |
           cd eden
-          TARGET=appimage DEVEL=true ./.ci/linux/build.sh v3
+          TARGET=appimage DEVEL=true ./.ci/linux/build.sh ${{ matrix.arch }}
 
       - name: Package
         shell: bash
         run: |
           cd eden
-          DEVEL=true ./.ci/linux/package.sh v3
+          DEVEL=true ./.ci/linux/package.sh ${{ matrix.arch }}
 
-      - name: Upload artifact
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4.6.2
         with:
-          name: linux
+          name: linux-${{ matrix.arch }}
           path: eden/*.AppImage*
+
+  windows:
+    name: "Windows (${{ matrix.arch }})"
+    runs-on: ${{ matrix.runs-on }}
+
+    matrix:
+      - runs-on: windows-latest
+        arch: amd64
+
+      - runs-on: windows-11-arm
+        arch: arm64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up vcpkg cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ github.workspace }}/build/vcpkg_installed
+            ${{ github.workspace }}/build/externals
+            ${{ github.workspace }}/.vcpkg
+          key: ${{ runner.os }}-${{ matrix.arch }}-vcpkg-${{ hashFiles('**/CMakeLists.txt', '**/vcpkg.json') }}-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.arch }}-vcpkg-
+
+      - name: Get Variables and Clone
+        uses: ./.github/workflows/clone
+
+      - name: Set up MSVC
+        uses: https://github.com/ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.arch }}
+
+      - name: Cygwin with autoconf # NEEDED FOR LIBUSB
+        shell: cmd
+        run: |
+          cd eden
+          ./.ci/windows/cygwin.bat
+
+      - name: Install Vulkan SDK
+        shell: powershell
+        run: |
+          cd eden
+          ./.ci/windows/install-vulkan-sdk.ps1
+
+      - name: Build
+        shell: cmd
+        run: |
+          cd eden
+          ./.ci/windows/build-bqt.bat ${{ matrix.arch }} no
+
+      - name: Package
+        shell: powershell
+        run: |
+          cd eden
+          ./.ci/windows/package.ps1 ${{ matrix.arch }} no
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: windows-${{ matrix.arch }}
+          path: eden/artifacts/*
+
+  android:
+    runs-on: ubuntu-latest
+    name: "Android"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get Variables and Clone
+        uses: ./.github/workflows/clone
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install apksigner -y
+
+      - name: Build
+        run: |
+          cd eden
+          JAVA_HOME=$JAVA_HOME_17_X64 DEVEL=true ./.ci/android/build.sh
+        env:
+          ANDROID_KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_B64 }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEYSTORE_PASS: ${{ secrets.ANDROID_KEYSTORE_PASS }}
+
+      - name: Package
+        run: |
+          cd eden
+          ./.ci/android/package.sh
+
+      - name: Upload artifacts
+        uses: forgejo/upload-artifact@v4
+        with:
+          name: android
+          path: eden/artifacts/*
