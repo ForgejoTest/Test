@@ -49,7 +49,7 @@ jobs:
         uses: softprops/action-gh-release@v2.2.2
         with:
           name: "${{ env.FORGEJO_TITLE }}"
-          tag_name: ${{ env.FORGEJO_NUMBER} }-${{ env.FORGEJO_REF }}
+          tag_name: ${{ env.FORGEJO_NUMBER }}-${{ env.FORGEJO_REF }}
           body_path: ./changelog.md
           prerelease: false
           draft: false
