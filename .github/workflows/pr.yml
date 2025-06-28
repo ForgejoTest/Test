@@ -1,0 +1,23 @@
+name: Pull Request
+
+on:
+  repository_dispatch: [pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: REF DO SOMETHING
+        uses: ./.github/workflows/base
+
+      - name: Get info
+        shell: bash
+        run: |
+          echo "Clone URL: $FORGEJO_CLONE_URL"
+          echo "Number: $FORGEJO_NUMBER"
+          echo "Ref: $FORGEJO_REF"
+          echo "Repository: $FORGEJO_REPOSITORY"
+          echo "Title: $FORGEJO_TITLE"
