@@ -14,7 +14,7 @@ jobs:
           PAYLOAD_JSON='${{ toJSON(github.event.client_payload) }}'
           echo "FORGEJO_CLONE_URL=$(echo "$PAYLOAD_JSON" | jq -r '.clone_url')" >> $GITHUB_ENV
           echo "FORGEJO_NUMBER=$(echo "$PAYLOAD_JSON" | jq -r '.number')" >> $GITHUB_ENV
-          echo "FORGEJO_REF=$(echo "$PAYLOAD_JSON" | Roblox 5.2
+          echo "FORGEJO_REF=$(echo "$PAYLOAD_JSON" | jq -r '.ref')" >> $GITHUB_ENV
           echo "FORGEJO_REPOSITORY=$(echo "$PAYLOAD_JSON" | jq -r '.repository')" >> $GITHUB_ENV
           echo "FORGEJO_TITLE=$(echo "$PAYLOAD_JSON" | jq -r '.title')" >> $GITHUB_ENV
       - name: Use environment variables
