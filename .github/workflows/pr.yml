@@ -48,6 +48,10 @@ jobs:
         shell: bash
         run: |
           cd eden
+          if [ "${{ matrix.arch }}" = 'aarch64' ] || [ "${{ matrix.arch }}" = 'armv9' ]; then
+              sed -i 's/Settings::values\.lru_cache_enabled\.GetValue()/true/' src/core/arm/nce/patcher.h
+          fi
+
           TARGET=appimage DEVEL=true ./.ci/linux/build.sh ${{ matrix.arch }} $(nproc) \
             -DCMAKE_C_COMPILER_LAUNCHER=ccache \
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
@@ -122,7 +126,7 @@ jobs:
         shell: cmd
         run: |
           cd eden
-          .\.ci\windows\build-bqt.bat ${{ matrix.arch }} no
+          .\.ci\windows\build-amd64.bat ${{ matrix.arch }} no
 
       - name: Package
         shell: powershell
