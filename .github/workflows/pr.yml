@@ -36,15 +36,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
-        with:
-          key: Eden-PRs-${{ runner.os }}-${{ matrix.arch }}
-
       - name: Install dependencies
         run: |
           chmod +x ./get-dependencies.sh
           ./get-dependencies.sh
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: Eden-PRs-${{ runner.os }}-${{ matrix.arch }}
 
       - name: Get Variables and Clone
         uses: ./.github/workflows/clone
