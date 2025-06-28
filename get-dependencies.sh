@@ -80,6 +80,7 @@ pacman -Syu --noconfirm \
 	vulkan-mesa-layers \
 	vulkan-nouveau \
 	wget \
+    wireless_tools \
 	x264 \
 	x265 \
 	xcb-util-cursor \
