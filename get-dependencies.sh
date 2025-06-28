@@ -41,6 +41,7 @@ pacman -Syu --noconfirm \
 	glu \
 	graphviz \
 	hidapi \
+    jq \
 	libass \
 	libdecor \
 	libfdk-aac \
