@@ -31,3 +31,8 @@ runs:
         git submodule update --init --recursive
 
         ls
+
+    - name: Clone Eden
+      shell: bash
+      run: |
+        git clone https://git.eden-emu.dev/eden-emu/eden.git --recursive

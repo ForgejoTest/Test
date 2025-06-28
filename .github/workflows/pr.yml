@@ -5,11 +5,22 @@ on:
     types: [pull_request]
 
 jobs:
-  test:
+  linux:
     runs-on: ubuntu-latest
+    container: ghcr.io/pkgforge-dev/archlinux:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          chmod +x ./get-dependencies.sh
+          ./get-dependencies.sh
+
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          key: Cortex-Test-Z-${{ runner.os }}-${{ matrix.arch }}
 
       - name: REF DO SOMETHING
         uses: ./.github/workflows/base
@@ -22,3 +33,21 @@ jobs:
           echo "Ref: $FORGEJO_REF"
           echo "Repository: $FORGEJO_REPOSITORY"
           echo "Title: $FORGEJO_TITLE"
+
+      - name: Build
+        shell: bash
+        run: |
+          cd eden
+          TARGET=appimage DEVEL=true ./.ci/linux/build.sh v3
+
+      - name: Package
+        shell: bash
+        run: |
+          cd eden
+          DEVEL=true ./.ci/linux/package.sh v3
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4.6.2
+        with:
+          name: linux
+          path: eden/*.AppImage*
