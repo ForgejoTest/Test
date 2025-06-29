@@ -128,12 +128,6 @@ jobs:
         with:
           arch: ${{ matrix.arch }}
 
-      - name: Cygwin with autoconf # NEEDED FOR LIBUSB
-        shell: cmd
-        run: |
-          cd eden
-          ./.ci/windows/cygwin.bat
-
       - name: Install Vulkan SDK
         shell: powershell
         run: |
