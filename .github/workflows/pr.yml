@@ -41,11 +41,6 @@ jobs:
           chmod +x ./linux/get-dependencies.sh
           ./linux/get-dependencies.sh
 
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
-        with:
-          key: Eden-PRs-${{ runner.os }}-${{ matrix.arch }}
-
       - name: Get Variables and Clone
         uses: ./.github/workflows/clone
 
@@ -57,9 +52,7 @@ jobs:
               sed -i 's/Settings::values\.lru_cache_enabled\.GetValue()/true/' src/core/arm/nce/patcher.h
           fi
 
-          TARGET=appimage DEVEL=true ./.ci/linux/build.sh ${{ matrix.arch }} $(nproc) \
-            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
-            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          TARGET=appimage DEVEL=true ./.ci/linux/build.sh ${{ matrix.arch }} $(nproc)
 
       - name: Package
         shell: bash
@@ -169,11 +162,6 @@ jobs:
         run: |
           chmod +x ./android/get-dependencies.sh
           ./android/get-dependencies.sh
-
-      - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
-        with:
-          key: Eden-PRs-${{ runner.os }}-Android
 
       - name: Get Variables and Clone
         uses: ./.github/workflows/clone

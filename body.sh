@@ -48,7 +48,7 @@ echo "Linux packages are packaged via AppImage. Each build is optimized for a sp
 echo "See the *Description* column for more info."
 echo
 echo "| Build | Description |"
-echo "| ----- | ----- | ----------- |"
+echo "| ----- | ----------- |"
 row legacy "amd64 (legacy)" "For CPUs older than 2013 or so"
 row amd64 "amd64" "For any modern AMD or Intel CPU"
 row steamdeck "Steam Deck" "For Steam Deck and other >= Zen 2 AMD CPUs"

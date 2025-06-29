@@ -23,7 +23,6 @@ pacman -Syu --noconfirm \
 		base-devel \
 		boost \
 		boost-libs \
-		ccache \
 		cmake \
 		curl \
 		enet \
