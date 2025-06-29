@@ -142,9 +142,6 @@ jobs:
           export DEVEL=true
           export CCACHE=true
 
-          echo "$PATH"
-          windeployqt --help
-
           ./.ci/windows/build.sh
 
       - name: Package

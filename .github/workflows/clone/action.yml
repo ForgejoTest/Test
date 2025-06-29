@@ -15,17 +15,21 @@ runs:
         echo "Repository: $FORGEJO_REPOSITORY"
         echo "Title: $FORGEJO_TITLE"
 
-    - name: Checkout Repo
-      shell: bash
-      run: |
-        git clone "$FORGEJO_CLONE_URL" test
-        cd test
-        git reset --hard $FORGEJO_REF
-        git submodule update --init --recursive
+    # - name: Checkout Repo
+    #   shell: bash
+    #   run: |
+    #     git clone "$FORGEJO_CLONE_URL" test
+    #     cd test
+    #     git reset --hard $FORGEJO_REF
+    #     git submodule update --init --recursive
 
-        ls
+    #     ls
 
     - name: Clone Eden (TMP)
       shell: bash
       run: |
-        git clone https://git.eden-emu.dev/eden-emu/eden.git --recursive -b new-ci
+        if ! git clone 'https://git.eden-emu.dev/eden-emu/eden.git' --recursive -b new-ci; then
+          echo "Using pflyly's mirror instead"
+          rm -rf ./eden || true
+          git clone 'https://github.com/pflyly/eden-mirror.git' --recursive -b new-ci
+        fi
