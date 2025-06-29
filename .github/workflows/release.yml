@@ -31,6 +31,8 @@ jobs:
 
       - name: Package artifacts nicely
         run: |
+          set -ex
+
           mkdir -p artifacts
 
           for arch in amd64 legacy steamdeck rog-ally aarch64 armv9

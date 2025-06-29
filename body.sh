@@ -3,7 +3,7 @@
 BASE_DOWNLOAD_URL="https://github.com/ForgejoTest/Test/releases/download"
 TAG=${FORGEJO_NUMBER}-${FORGEJO_REF}
 
-function row() {
+row() {
   ARCH="$1"
   PRETTY_ARCH="$2"
   DESCRIPTION="$3"
@@ -14,7 +14,7 @@ function row() {
   echo
 }
 
-function win() {
+win() {
   ARCH="$1"
   PRETTY_ARCH="$2"
   DESCRIPTION="$3"
